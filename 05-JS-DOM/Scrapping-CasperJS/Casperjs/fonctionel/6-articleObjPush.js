@@ -16,53 +16,53 @@
 // Import de casperJS : https://www.npmjs.com/package/casper
 const fs = require('fs')
 var
-  casper = require("casper").create({
-    pageSettings: {
-      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20130404 Firefox/23.0"
-    }
-  }),
-  url = 'https://lemediapourtous.fr/category/vincent-lapierre/',
-  arrayArticle = [];
+    casper = require("casper").create({
+        pageSettings: {
+            userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:23.0) Gecko/20130404 Firefox/23.0"
+        }
+    }),
+    url = 'https://lemediapourtous.fr/category/vincent-lapierre/',
+    arrayArticle = [];
 
 // Script Dev
 var
-  logFinish = function() {
-    this.echo('Script Terminé !').exit()
-  }
+    logFinish = function() {
+        this.echo('Script Terminé !').exit()
+    }
 
 var
-  processPage = function() {
-    arrayArticle = this.evaluate(getDataArticle)
-      // on demande a utils de nous loguer arrayLinks
-    require('utils').dump(arrayArticle)
-  }
+    processPage = function() {
+        arrayArticle = this.evaluate(getDataArticle)
+            // on demande a utils de nous loguer arrayLinks
+        require('utils').dump(arrayArticle)
+    }
 
 function pushDataJson() {
-  const
-    arrayArticle = this.evaluate(getDataArticle),
-    valueArrayArticles = JSON.stringify(arrayArticle, null, 2)
+    const
+        arrayArticle = this.evaluate(getDataArticle),
+        valueArrayArticles = JSON.stringify(arrayArticle, null, 2)
 
-  fs.write('../Json/6-articleObj.json', valueArrayArticles)
+    fs.write('../Json/6-articleObj.json', valueArrayArticles)
 }
 
 function getDataArticle() {
 
-  var arrayArticle = [],
-    articles = document.querySelectorAll("div.wrap-content article.type-post");
+    var arrayArticle = [],
+        articles = document.querySelectorAll("div.wrap-content article.type-post");
 
-  for (var i = 0, article; article = articles[i]; i++) {
-    var link = article.querySelector(' h2.article-title a'),
-      content = article.querySelector('.article-content p'),
-      articleObj = {}
+    for (var i = 0, article; article = articles[i]; i++) {
+        var link = article.querySelector(' h2.article-title a'),
+            content = article.querySelector('.article-content p'),
+            articleObj = {}
 
-    articleObj['link'] = link.getAttribute('href')
-    articleObj['content'] = content.innerText
-    articleObj['title'] = link.innerText
+        articleObj['link'] = link.getAttribute('href')
+        articleObj['content'] = content.innerText
+        articleObj['title'] = link.innerText
 
-    arrayArticle.push(articleObj)
-  }
+        arrayArticle.push(articleObj)
+    }
 
-  return arrayArticle
+    return arrayArticle
 }
 
 casper.start(url)
